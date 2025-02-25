@@ -1,0 +1,304 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/','HomeController@index');
+Route::get('logout','Auth\LoginController@logout');
+
+
+// Group
+Route::resource('/group','UM\GroupController');
+Route::post('/group_save','UM\GroupController@store');
+Route::get('/group_edit/{id}','UM\GroupController@edit');
+Route::post('/group_update/{id}','UM\GroupController@update');
+Route::get('/group_delete/{id}','UM\GroupController@destroy');
+
+//user
+Route::resource('/users','UM\UsersController');
+Route::post('/user_save','UM\UsersController@store');
+Route::post('/user_dalam_save','UM\UsersController@storedalam');
+Route::get('/user_edit/{id}','UM\UsersController@edit');
+Route::get('/getem/{id}', 'UM\UsersController@getem');
+Route::post('/user_update/{id}','UM\UsersController@update');
+Route::get('/user_delete/{id}','UM\UsersController@destroy');
+
+//menu
+Route::resource('/menus','UM\MenuController');
+Route::get('/menu_add','UM\MenuController@create');
+Route::post('/menu_save','UM\MenuController@store');
+Route::get('/menu_edit/{id}','UM\MenuController@edit');
+Route::post('/menu_update/{id}','UM\MenuController@update');
+Route::get('/menu_delete/{id}','UM\MenuController@destroy');
+
+Route::get('/submenu_add/{id}','UM\MenuController@create_submenu');
+Route::post('/submenu_save','UM\MenuController@store_submenu');
+Route::get('/submenu_edit/{id}','UM\MenuController@edit_submenu');
+Route::post('/submenu_update/{id}','UM\MenuController@update_submenu');
+
+//permissions
+Route::resource('/permissions','UM\PermissionsController');
+Route::post('/permission_save','UM\PermissionsController@store');
+Route::get('/permission_edit/{id}','UM\PermissionsController@edit');
+Route::post('/permission_update/{id}','UM\PermissionsController@update');
+Route::get('/permission_delete/{id}','UM\PermissionsController@destroy');
+
+
+//pendaftaran
+Route::get('publishsc', 'Pendaftaran\Pendaftaran_scController@publishsc');
+Route::get('/cari_bl','Pendaftaran\Pendaftaran_scController@cari_bl');
+Route::post('/simpanpub','Pendaftaran\Pendaftaran_scController@simpanpub');
+
+Route::resource('pendaftaran_sc', 'Pendaftaran\Pendaftaran_scController');
+Route::get('/pendaftaran_add','Pendaftaran\Pendaftaran_scController@create');
+Route::post('/pendaftaran_insert','Pendaftaran\Pendaftaran_scController@store');
+Route::get('/pendaftaran_edit/{id}','Pendaftaran\Pendaftaran_scController@edit');
+Route::post('/pendaftaran_update/{id}','Pendaftaran\Pendaftaran_scController@update');
+Route::get('/pendaftaran_delete/{id}','Pendaftaran\Pendaftaran_scController@destroy');
+Route::get('/pendaftaran_berkas/{id}','Pendaftaran\Pendaftaran_scController@upload_berkas');
+Route::post('/uploadberkas/{id}','Pendaftaran\Pendaftaran_scController@simpanupload');
+Route::get('/verifikasi_publish/{id}','Pendaftaran\Pendaftaran_scController@verifikasi_publish');
+Route::get('/detail_publish/{id}','Pendaftaran\Pendaftaran_scController@detail_publish');
+Route::get('/updatepublish/{id}','Pendaftaran\Pendaftaran_scController@updatepublish');
+Route::get('/verifikasi_berkas/{id}','Pendaftaran\Pendaftaran_scController@verifikasi_berkas');
+Route::get('/verifikasi_berkas_sesuai/{id}/{idsc}','Pendaftaran\Pendaftaran_scController@verifikasi_berkas_sesuai');
+Route::post('/simpantamu','Pendaftaran\Pendaftaran_scController@simpantamu');
+Route::get('/verifikasi_sc/{id}','Pendaftaran\Pendaftaran_scController@verifikasi_sc');
+
+//urikes
+Route::resource('urikes', 'UrikesController');
+Route::post('/cari_urikes','UrikesController@search');
+//rekaptamu
+Route::resource('rekaptamu', 'RekapTamuController');
+Route::get('/cari_tamu/{dari}/{sampai}','RekapTamuController@search');
+Route::get('/cari_nama','RekapTamuController@searchn');
+Route::get('/cari_detail/{f}/{dari}/{sampai}','RekapTamuController@searchd');
+Route::resource('rekapsenjata', 'RekapSenjataController');
+Route::resource('rekapamunisi', 'RekapAmunisiController');
+Route::resource('pelaporansenjata', 'PelaporanSenjataController');
+Route::get('/riwayatpelaporansenjata','PelaporanSenjataController@riwayatpelaporansenjata');
+Route::post('/simpanpelaporan','PelaporanSenjataController@simpanpelaporan');
+Route::get('/detailriwayatpelaporan/{id}','PelaporanSenjataController@detailriwayatpelaporan');
+Route::resource('pelaporanamunisi', 'PelaporanAmunisiController');
+Route::post('/simpanpelaporanamunisi','PelaporanAmunisiController@simpanpelaporanamunisi');
+Route::get('/riwayatpelaporanamunisi','PelaporanAmunisiController@riwayatpelaporanamunisi');
+Route::get('/detailriwayatpelaporanamunisi/{id}','PelaporanAmunisiController@detailriwayatpelaporanamunisi');
+
+Auth::routes();
+Route::get('/home', 'HomeController@index')->name('home');
+
+//webcame
+
+Route::get('/webcame','Pendaftaran\Pendaftaran_scController@webcame');
+Route::post('/simpanfoto','Pendaftaran\Pendaftaran_scController@simpanfoto');
+
+
+
+// kerjasama
+Route::resource('/kerjasama','KerjasamaController');
+Route::post('tambahkerjasama','KerjasamaController@addKerjasama');
+//Ubah kerjasama
+Route::get('tambahkerjasama/{id}','KerjasamaController@ubahKerjasama');
+Route::post('tambahkerjasama/{id}','KerjasamaController@simpanKerjasama');
+Route::delete('tambahkerjasama/{id}','KerjasamaController@delete_kerjasama');
+
+//satker
+Route::resource('/kaliber','KaliberController');
+Route::post('simpankaliber','KaliberController@simpankaliber');
+Route::get('hapuskaliber/{id}','KaliberController@hapuskaliber');
+
+Route::resource('/satker','SatkerController');
+Route::post('simpansatker','SatkerController@simpansatker'); 
+Route::get('hapussatker/{id}','SatkerController@hapussatker');
+
+Route::resource('/loguser','LoguserController');
+// senjata
+Route::resource('/senjata','SenjataController');
+Route::post('tambahsenjata','SenjataController@addSenjata');
+Route::post('simpansenjata','SenjataController@simpangun');
+//Ubah senjata
+Route::get('tambahsenjata/{id}','SenjataController@ubahSenjata');
+Route::get('ambilsubsenjata','SenjataController@ambilsubsenjata');
+Route::post('tambahsenjata/{id}','SenjataController@simpanSenjata');
+Route::delete('tambahsenjata/{id}','SenjataController@delete_Senjata');
+
+Route::resource('/amunisi','AmunisiController');
+Route::post('simpanamunisi','AmunisiController@simpanamunisi');
+Route::get('hapusamunisi/{id}','AmunisiController@hapusamunisi');
+Route::get('putamunisi','AmunisiController@putamunisi');
+Route::post('simpanput','AmunisiController@simpanput');
+Route::get('pusamunisi','AmunisiController@pusamunisi');
+Route::post('simpanpus','AmunisiController@simpanpus');
+
+//kategori senjata
+Route::resource('/kategori_senjata','KategoriSenjataController');
+Route::post('tambahkategori_senjata','KategoriSenjataController@addKategoriSenjata');
+//Ubah senjata
+Route::get('tambahkategori_senjata/{id}','KategoriSenjataController@ubahKategoriSenjata');
+Route::post('tambahkategori_senjata/{id}','KategoriSenjataController@simpanKategoriSenjata');
+Route::delete('tambahkategori_senjata/{id}','KategoriSenjataController@delete_KategoriSenjata');
+
+
+
+// Lemari
+Route::resource('/lemari','LemariController');
+Route::post('tambahlemari','LemariController@addLemari');
+//Ubah Lemari
+Route::get('tambahlemari/{id}','LemariController@ubahLemari');
+Route::post('tambahlemari/{id}','LemariController@simpanLemari');
+Route::delete('tambahlemari/{id}','LemariController@delete_Lemari');
+
+// Lokasi
+//Route::resource('/lokasi','LokasiController');
+//Route::post('tambahlokasi','LokasiController@addLokasi');
+////Ubah Lokasi
+//Route::get('tambahlokasi/{id}','LokasiController@ubahLokasi');
+//Route::post('tambahlokasi/{id}','LokasiController@simpanLokasi');
+//Route::delete('tambahlokasi/{id}','LokasiController@delete_Lokasi');
+
+
+// Lokasi
+Route::resource('/peminjamaansenjata','PeminjamanSenjataController');
+Route::get('ambilaja','PeminjamanSenjataController@ambilaja');
+Route::get('ambilaja2','PeminjamanSenjataController@ambilaja2');
+Route::get('/peminjaman_add','PeminjamanSenjataController@create');
+Route::post('/peminjaman_insert','PeminjamanSenjataController@store');
+Route::get('getsenjata/{id}', 'PeminjamanSenjataController@getsenjata');
+Route::get('getamunisi/{id}', 'PeminjamanSenjataController@getamunisi');
+Route::get('getalot/{id}', 'PeminjamanSenjataController@getalot');
+Route::get('peminjamandetail/{id}', 'PeminjamanSenjataController@peminjamandetail');
+Route::get('riwayatdetail/{id}', 'PeminjamanSenjataController@riwayatdetail');
+Route::get('kembalikan/{idpinjam}', 'PeminjamanSenjataController@kembalikan');
+Route::get('/pengembaliansenjata','PeminjamanSenjataController@pengembaliansenjata');
+Route::get('/riwayatpeminjaman','PeminjamanSenjataController@riwayatpeminjaman');
+Route::post('/kembalisenjata','PeminjamanSenjataController@kembalisenjata');
+
+// Lokasi
+Route::resource('/tamu','TamuController');
+Route::get('gettam/{id}', 'TamuController@gettam');
+
+//ilyas
+//master member
+Route::resource('/member','UM\MemberController');
+Route::get('/updatenotif/{id}','HomeController@updatenotif');
+Route::post('/member_update','UM\MemberController@update');
+Route::get('/tambah_member','UM\MemberController@tambahmember');
+Route::get('/member_detail/{id}','UM\MemberController@edit');
+
+//master doc type
+Route::get('/doctype','DokumenController@index')->name('master.doctype');
+Route::get('/doctype_detail/{id}','DokumenController@edit');
+Route::post('/getDocType', 'DokumenController@getDocType')->name('master.getDocType');
+Route::get('doctype_delete/{id}', 'DokumenController@deldoctype')->name('master.deletedoctype');
+Route::get('/tambah_dokumen','DokumenController@tambahdokumentype');
+Route::get('/getHirarki','DokumenController@getHirarki');
+Route::post('storedoctype', 'DokumenController@insertdoctype')->name('master.storedoctype');
+Route::post('updatedoctype', 'DokumenController@updatedoctype')->name('master.updatedoctype');
+
+//master tipe koleksi
+Route::get('/tipekoleksi','TipekController@index');
+Route::post('/tambah_koleksi','TipekController@tambahtipekoleksi')->name('master.storetipekoleksi');
+Route::post('/edit_tipek','TipekController@edit')->name('master.edittipekoleksi');
+Route::post('tipek_delete', 'TipekController@deltipek')->name('master.deltipekoleksi');
+
+// //master Kata Kunci
+Route::get('/tipesubjek','TsubController@index');
+Route::post('/tambah_tsub','TsubController@tambahtipesubjek')->name('master.storetipesubjek');
+Route::post('/edit_tsub','TsubController@edit')->name('master.edittipesubjek');
+Route::post('tsub_delete', 'TsubController@delete')->name('master.deltipesubjek');
+
+// //master Tipe Member
+Route::get('/tipemember','TmemController@index');
+Route::post('/tambah_tmem','TmemController@tambahtipemember')->name('master.storetipemember');
+Route::post('/edit_tmem','TmemController@edit')->name('master.edittipemember');
+Route::post('tmem_delete', 'TmemController@delete')->name('master.deltipemember');
+
+//master Lokasi
+Route::get('/lokasi','LokasiController@index');
+Route::post('/tambah_lokasi','LokasiController@tambah')->name('master.storelokasi');
+Route::post('/edit_lokasi','LokasiController@edit')->name('master.editlokasi');
+Route::post('lokasi_delete', 'LokasiController@delete')->name('master.dellokasi');
+
+//master penerbit
+Route::get('/penerbit','PenerbitController@index');
+Route::post('/tambah_penerbit','PenerbitController@tambah')->name('master.storepenerbit');
+Route::post('/edit_penerbit','PenerbitController@edit')->name('master.editpenerbit');
+Route::post('penerbit_delete', 'PenerbitController@delete')->name('master.delpenerbit');
+
+//master Bidang Hukum
+Route::get('/bidanghukum','BhukumController@index');
+Route::post('/tambah_bhukum','BhukumController@tambah')->name('master.storebhukum');
+Route::post('/edit_bhukum','BhukumController@edit')->name('master.editbhukum');
+Route::post('bhukum_delete', 'BhukumController@delete')->name('master.delbhukum');
+
+//master Tempat Terbit
+Route::get('/tempatterbit','TemterController@index');
+Route::post('/tambah_temter','TemterController@tambah')->name('master.storetemter');
+Route::post('/edit_temter','TemterController@edit')->name('master.edittemter');
+Route::post('temter_delete', 'TemterController@delete')->name('master.deltemter');
+//ilyas end
+
+//adit
+Route::get('/eksemplar', ['as' => 'master.eksemplar','uses' => 'EksemplarController@index']);
+Route::post('delete-multiple-eksemplar', ['as'=>'eksemplar.multiple-delete','uses'=>'EksemplarController@delete']);
+Route::post('add-eksemplar', ['as' => 'eksemplar.addx', 'uses' => 'EksemplarController@add']);
+Route::post('edit-eksemplar', ['as' => 'eksemplar.editx', 'uses' => 'EksemplarController@edit']);
+
+Route::get('/province', ['as' => 'province.index', 'uses' => 'WilayahController@index']);
+Route::post('delete-multiple-provinsi', ['as'=>'wilayah.multiple-delete','uses'=>'WilayahController@delete']);
+Route::post('add-provinsi', ['as' => 'wilayah.addw', 'uses' => 'WilayahController@add']);
+Route::post('edit-provinsi', ['as' => 'wilayah.editw', 'uses' => 'WilayahController@edit']);
+
+Route::get('/kabupaten', ['as' => 'kabupaten.index', 'uses' => 'WilayahController@indexkab']);
+Route::post('add-kabupaten', ['as' => 'wilayah.addkab', 'uses' => 'WilayahController@addkab']);
+Route::post('delete-multiple-kabupaten', ['as'=>'wilayah.multiple-delete-kabupaten','uses'=>'WilayahController@deletekab']);
+Route::post('edit-kabupaten', ['as' => 'wilayah.editkab', 'uses' => 'WilayahController@editkab']);
+
+Route::get('/kecamatan', ['as' => 'kecamatan.index', 'uses' => 'WilayahController@indexkec']);
+Route::post('add-kecamatan', ['as' => 'wilayah.addkec', 'uses' => 'WilayahController@addkec']);
+Route::post('delete-multiple-kecamatan', ['as'=>'wilayah.multiple-delete-kecamatan','uses'=>'WilayahController@deletekec']);
+Route::post('edit-kecamatan', ['as' => 'wilayah.editkec', 'uses' => 'WilayahController@editkec']);
+
+Route::get('/jpengarang', ['as' => 'pengarang.indexjp', 'uses' => 'PengarangController@indexjp']);
+Route::post('add-jpengarang', ['as' => 'pengarang.addjp', 'uses' => 'PengarangController@addjp']);
+Route::post('delete-multiple-jpengarang', ['as'=>'pengarang.multiple-delete-jpengarang','uses'=>'PengarangController@deletejp']);
+Route::post('edit-jpengarang', ['as' => 'pengarang.editjp', 'uses' => 'PengarangController@editjp']);
+
+Route::get('/tpengarang', ['as' => 'pengarang.indextp', 'uses' => 'PengarangController@indextp']);
+Route::post('add-tpengarang', ['as' => 'pengarang.addtp', 'uses' => 'PengarangController@addtp']);
+Route::post('delete-multiple-tpengarang', ['as'=>'pengarang.multiple-delete-tpengarang','uses'=>'PengarangController@deletetp']);
+Route::post('edit-tpengarang', ['as' => 'pengarang.edittp', 'uses' => 'PengarangController@edittp']);
+
+Route::get('/npengarang', ['as' => 'pengarang.indexnp', 'uses' => 'PengarangController@indexnp']);
+Route::post('add-npengarang', ['as' => 'pengarang.addnp', 'uses' => 'PengarangController@addnp']);
+Route::post('delete-multiple-npengarang', ['as'=>'pengarang.multiple-delete-npengarang','uses'=>'PengarangController@deletenp']);
+Route::post('edit-npengarang', ['as' => 'pengarang.editnp', 'uses' => 'PengarangController@editnp']);
+
+Route::get('/bahasa', ['as' => 'bahasa.index', 'uses' => 'PengarangController@indexbhs']);
+Route::post('add-bahasa', ['as' => 'bahasa.addbhs', 'uses' => 'PengarangController@addbhs']);
+Route::post('delete-multiple-bahasa', ['as'=>'bahasa.multiple-delete-bahasa','uses'=>'PengarangController@deletebhs']);
+Route::post('edit-bahasa', ['as' => 'bahasa.editbhs', 'uses' => 'PengarangController@editbhs']);
+
+Route::get('/kala_terbit', ['as' => 'kt.index', 'uses' => 'PengarangController@indexkt']);
+Route::post('add-kalaterbit', ['as' => 'kt.addkt', 'uses' => 'PengarangController@addkt']);
+Route::post('delete-multiple-kt', ['as'=>'kt.multiple-delete-kt','uses'=>'PengarangController@deletekt']);
+Route::post('edit-kt', ['as' => 'kt.editkt', 'uses' => 'PengarangController@editkt']);
+
+Route::get('/gmd', ['as' => 'gmd.index', 'uses' => 'PengarangController@indexgmd']);
+Route::post('add-gmd', ['as' => 'gmd.addgmd', 'uses' => 'PengarangController@addgmd']);
+Route::post('delete-multiple-gmd', ['as'=>'gmd.multiple-delete-gmd','uses'=>'PengarangController@deletegmd']);
+Route::post('edit-gmd', ['as' => 'gmd.editgmd', 'uses' => 'PengarangController@editgmd']);
+//adit end
+
+//mindy start
+Route::get('/saran','SaranController@index')->name('saran.saran');
+Route::get('saran_delete/{id}', 'SaranController@delsaran')->name('master.deletesaran');
+//mindy end

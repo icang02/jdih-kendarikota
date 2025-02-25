@@ -1,0 +1,700 @@
+<?php
+
+
+namespace App\Http\Controllers;
+
+use App\Master_provinsi;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Dokumen;
+use App\DocumentType;
+use App\User;
+use Session;
+use Datatables;
+
+
+class DokumenController
+{
+    public function index()
+    {
+//        dd("mantap");die();
+        $pageTitle = 'Tipe Dokumen';
+//        $dokumen = DocumentType::where('parent_id','=','0')->get();
+        $dokumen = DB::table('document_type')->get();
+//        $group = Group::all();
+        return view('master.tipe_dokumen.index', compact('pageTitle', 'dokumen'));
+    }
+
+    public function deldoctype($id)
+    {
+//        dd($id);
+        DB::table('document_type')->where('id', $id)->delete();
+
+        return redirect()->route('master.doctype')->with('success', 'Tipe dokumen berhasil dihapus.');
+
+    }
+
+    public function edit($id)
+    {
+        $data = DB::table('document_type')->where('id', $id)->get();
+        $tipe = DocumentType::where('parent_id', '=', '0')->get();
+
+        return view('master.tipe_dokumen.detail', compact('data', 'tipe'));
+
+    }
+
+    public function getDocType(Request $request)
+    {
+
+        $columns = array(
+            0 => 'id',
+            1 => 'second_id',
+            2 => 'name'
+        );
+
+        $totalData = DB::table('document_type')->count();
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+            $posts = DB::table('document_type')
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+            $totalFiltered = DB::table('document_type')->count();
+        } else {
+            $search = $request->input('search.value');
+            $posts = DB::table('document_type')
+                ->where('second_id', 'like', '%' . $search . '%')
+                ->orWhere('name', 'like', '%' . $search . '%')
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+            $totalFiltered = DB::table('document_type')
+                ->where('second_id', 'like', '%' . $search . '%')
+                ->orWhere('name', 'like', '%' . $search . '%')
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->count();
+        }
+
+        $data = array();
+
+        if ($posts) {
+            $count = $start + 1;
+            foreach ($posts as $d) {
+                $token = csrf_token();
+                $nestedData['no'] = $count;
+                $nestedData['second_id'] = $d->second_id;
+                $nestedData['nama'] = $d->name;
+                $nestedData['aksi'] = '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-info" data-edit-id="' . $d->id . '"><i class="fa fa-pencil"></i></button><form method="post" id="delme' . $d->id . '" action="' . route('integrasi.deletedoctype') . '"><input type="hidden" name="_token" value="' . $token . '"/><input type="hidden" name="id" value="' . $d->id . '"/><button type="button" onclick="deleteThis(' . $d->id . ')" class="btn btn-danger"><i class="fa fa-trash-o"></i></button></form>';
+                $data[] = $nestedData;
+                $count++;
+            }
+        }
+
+        $json_data = array(
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => intval($totalData),
+            'recordsFiltered' => intval($totalFiltered),
+            'data' => $data
+        );
+
+        echo json_encode($json_data);
+    }
+
+    public function tambahdokumentype()
+    {
+//        dd("mantap");die();
+        $pageTitle = 'Tambah Dokumen';
+        $tipe = DocumentType::where('parent_id', '=', '0')->get();
+        $url = 'storedoctype';
+        return view('master.tipe_dokumen.tambah', compact('pageTitle', 'url', 'tipe'));
+    }
+
+    public function getHirarki()
+    {
+        ini_set('memory_limit', '-1');
+        $id = $_GET["id"];
+        $longId = count(explode(":", $id));
+        $docType = DocumentType::where('second_id', 'like', '' . $id . ':%')->get();
+        $luar = '<option>-PILH HIRARKI-</option><option value="0">HIRARKI BARU</option>';
+        if ($longId == 1) {
+            foreach ($docType as $value) {
+                if (count(explode(":", $value->second_id)) == 2) {
+                    $luar .= '<option value="' . $value->second_id . '">' . $value->second_id . ' - ' . $value->name . '</option>';
+                }
+            }
+        } else if ($longId == 2) {
+            foreach ($docType as $value) {
+                if (count(explode(":", $value->second_id)) == 3) {
+                    $luar .= '<option value="' . $value->second_id . '">' . $value->second_id . ' - ' . $value->name . '</option>';
+                }
+            }
+        }
+
+        if ($id == 0) {
+            $luar = '';
+        }
+
+        echo $luar;
+    }
+
+    public function updatedoctype(Request $request)
+    {
+//        dd($request);
+        $id = $request->input('id_edit');
+        $nama = $request->input('nama');
+        $hirarki = $request->input('hirarki');
+        $getParent = explode(":", $hirarki);
+        if ($hirarki == 0) {
+            $second_id = $id;
+            $parent_id = 0;
+        } else {
+            if (count($getParent) == 1) {
+                $second_id = $getParent[0] . ":" . $id;
+                $parent_id = $id;
+            } else if (count($getParent) == 2) {
+                $second_id = $getParent[0] . ":" . $getParent[1] . ":" . $id;
+                $parent_id = $id;
+
+            } else {
+                $second_id = $hirarki;
+                $parent_id = $id;
+            }
+        }
+
+        $query = DB::table('document_type')
+            ->where('id', $id)
+            ->update([
+                "parent_id" => $parent_id,
+                "name" => $nama,
+                "second_id" => $second_id
+            ]);
+        return redirect()->route('master.doctype')->with('success', 'Data tipe dokumen berhasil diupdate.');
+    }
+
+    public function insertdoctype(Request $request)
+    {
+        $getId = DB::table('document_type')->orderBy('id', 'desc')->first();
+        $nama = $request->input('nama');
+        $hirarki = $request->input('hirarki');
+        $getParent = explode(":", $hirarki);
+        if ($hirarki == 0) {
+            $second_id = $getId->id + 1;
+            $parent_id = 0;
+        } else if (count($getParent) == 1) {
+            $second_id = $hirarki . ":" . ($getId->id + 1);
+            $parent_id = $getParent[0];
+        } else {
+            $second_id = $hirarki . ":" . ($getId->id + 1);
+            $parent_id = $getParent[1];
+        }
+
+        $idt = DocumentType::where("name", $nama)
+            ->select("id", "second_id")->first();
+        if ($idt == null) {
+            DocumentType::Create([
+                "name" => $nama,
+                "second_id" => $second_id,
+                "parent_id" => $parent_id
+            ]);
+            if ($hirarki == 0 || $hirarki == '0') {
+                $idd = DocumentType::where("name", $nama)
+                    ->select("id")->first()->id;
+                DocumentType::updateOrCreate(
+                    ["name" => $nama],
+                    ["second_id" => $idd]
+                );
+            } else {
+                $idd = DocumentType::where("name", $nama)
+                    ->select("id")->first()->id;
+                DocumentType::updateOrCreate(
+                    ["name" => $nama],
+                    ["second_id" => $hirarki . ":" . $idd]
+                );
+            }
+            $idt = DocumentType::where("name", $nama)
+                ->select("id", "second_id")->first();
+        }
+        return redirect()->route('master.doctype')->with('success', 'Data tipe dokumen berhasil ditambahkan.');
+    }
+//adit
+    public function indexpd()
+    {
+        //$datad = Dokumen::GET_DOC();
+
+        return view('dokumen.index');
+    }
+
+    public function deldoc(Request $request){
+        $del = count($request -> ck);
+        if($del > 0){
+            for($i = 0; $i < $del; $i++){
+                Dokumen::where('id', $request->ck[$i])->delete();
+            }
+        }
+        return redirect()->back();
+    }
+    
+    public function getKab($id){
+        $getkode = DB::table('provinsi')->select('id')->where('id', $id)->first();
+        $kode = $getkode->id;
+        $getdata = DB::table('kabupaten')->where('province_id', $kode)->get();
+        echo $getdata;
+    }
+
+    public function getKec($id){
+        $getkode = DB::table('kabupaten')->select('id')->where('id', $id)->first();
+        $kode = $getkode->id;
+        $getdata = DB::table('kecamatan')->where('regency_id', $kode)->get();
+        echo $getdata;
+    }
+
+    public function getsubject(){
+        $sbj = DB::table('data_subyek')->get();
+        return $sbj;
+    }
+
+    public function addoc(){
+        $dbh = DB::table('bahasa')->get();
+        $dtp = DB::table('tempat_penetapan')->get();
+        $dbd = DB::table('bidang_hukum')->  get();
+        $dtkk = DB::table('tipe_kata_kunci')->get();
+        $dtpeng = DB::table('tipe_pengarang')->get();
+        $djp = DB::table('jenis_pengarang')->get();
+        $dpn = DB::table('penerbit')->get();
+        $dtk = DB::table('tipe_koleksi')->get();
+        $deks = DB::table('pola_eksemplar')->get();
+        $dkt = DB::table('kala_terbit')->get();
+        $dgmd = DB::table('gmd')->get();
+        $dsts = DB::table('status')->get();
+        // $ddc = DB::table('document')->get();
+        $prov = Master_provinsi::get();
+        $data = DocumentType::where('parent_id', '=', '0')->get();
+
+        return view('dokumen.tambahdocument', compact('data', 'dsts', 'dgmd', 'dkt', 'deks', 'dtk', 'dpn', 'dbh', 'dbd', 'dtp', 'prov', 'dtkk', 'dtpeng', 'djp'));
+        // echo json_encode($data);
+    }
+
+    public function storedocppu(Request $request){
+        if($request->tipe_dokumen == 1){
+            $numbs = count($request->nama_pengarang);
+        }else{
+            $numbs = count($request->nama_pengarangm);
+        }
+        $numbeks = count($request->item_code);
+        $numbsub = count($request->subyek);
+        $numblamp = count($request->judul_lampiran);
+        $numbperter = count($request->peraturan_terkait);
+        $numbdocter = count($request->document_terkait);
+        $numbstat = count($request->status_peraturan);
+
+        try {
+            if($request->tipe_dokumen == 1){
+                $data = [
+                    "tipe_dokumen" => $request->tipe_dokumen,
+                    "jenis_peraturan" => explode(':',$request->jenis_peraturan1)[1],
+                    "bidang_hukum" => $request->bidang_hukum1,
+                    "judul" => $request->judul1,
+                    "nomor_peraturan" => $request->nomor_peraturan1,
+                    "tahun_terbit" => $request->tahun_terbit1,
+                    "singkatan_bentuk" => $request->singkatan_bentuk1,
+                    "tempat_terbit" => $request->tempat_terbit1,
+                    "bahasa" => $request->bahasa1,
+                    "tanggal_dibacakan" => $request->tanggal_dibacakan2,
+                    "tanggal_penetapan" => $request->tanggal_penetapan,
+                    "inisiatif" => $request->inisiatif,
+                    "pemrakarsa" => $request->pemrakarsa,
+                    "daerah" => $request->daerah,
+                    "tanggal_pengundangan" => $request->tanggal_pengundangan,
+                ];
+            }elseif($request->tipe_dokumen == 2){
+                $data = [
+                    "tipe_dokumen" => $request->tipe_dokumen,
+                    "jenis_peraturan" => explode(':',$request->jenis_peraturan2)[1],
+                    "judul" => $request->judul2,
+                    "tahun_terbit" => $request->tahun_terbit2,
+                    "tempat_terbit" => $request->tempat_terbit2,
+                    "bahasa" => $request->bahasa2,
+                    "tanggal_dibacakan" => $request->tanggal_dibacakan2,
+                    "teu" => $request->teu,
+                    "integrasi" => $request->integrasi,
+                    "nomor_panggil" => $request->nomor_panggil,
+                    "edisi" => $request->edisi,
+                    "penerbit" => $request->penerbit,
+                    "deskripsi_fisik" => $request->deskripsi_fisik,
+                    "isbn" => $request->isbn,
+                    "nomor_induk_buku" => $request->nomor_induk_buku,
+                    "tipe_koleksi_nomor_eksemplar" => $request->tipe_koleksi_nomor_eksemplar,
+                    "pola_nomor_eksemplar" => $request->pola_nomor_eksemplar,
+                    "jumlah_eksemplar" => $request->jumlah_eksemplar,
+                    "pernyataan_tanggung_jawab" => $request->pernyataan_tanggung_jawab,
+                    "gmd" => $request->gmd,
+                    "judul_seri" => $request->judul_seri,
+                    "klasifikasi" => $request->klasifikasi,
+                    "label" => $request->label,
+                    "info_detil_spesifik" => $request->info_detil_spesifik,
+                    "abstrak" => $request->abstrak,
+                    "sembunyikan_di_opac" => $request->sembunyikan_di_opac,
+                    "promosikan_ke_beranda" => $request->promosikan_ke_beranda
+                ];
+            }elseif($request->tipe_dokumen == 3){
+                $data = [
+                    "tipe_dokumen" => $request->tipe_dokumen,
+                    "jenis_peraturan" => explode(':',$request->jenis_peraturan3)[1],
+                    "bidang_hukum" => $request->bidang_hukum3,
+                    "judul" => $request->judul3,
+                    "tahun_terbit" => $request->tahun_terbit3,
+                    "bahasa" => $request->bahasa3,
+                    "sumber" => $request->sumber3,
+                ];
+            }elseif($request->tipe_dokumen == 4){
+                $data = [
+                    "tipe_dokumen" => $request->tipe_dokumen,
+                    "jenis_peraturan" => explode(':',$request->jenis_peraturan4)[1],
+                    "bidang_hukum" => $request->bidang_hukum4,
+                    "judul" => $request->judul4,
+                    "nomor_peraturan" => $request->nomor_peraturan4,
+                    "singkatan_bentuk" => $request->singkatan_bentuk4,
+                    "tempat_terbit" => $request->tempat_terbit4,
+                    "bahasa" => $request->bahasa4,
+                    "sumber" => $request->sumber4,
+                    "tanggal_dibacakan" => $request->tanggal_dibacakan4,
+                ];
+            }
+            $wkaowkoa = DB::table('document')->insertGetId($data);
+            for ($i = 0; $i < $numbeks; $i++) {
+                $eks = [
+                    'id_dokumen' => $wkaowkoa,
+                    'coll_type_id' => $request->coll_type_id[$i],
+                    'item_code' => $request->item_code[$i],
+                ];
+                $eksemplar = DB::table('item')->insert($eks);
+            }
+            for ($i = 0; $i < $numbs; $i++) {
+                $teu = [
+                    'id_dokumen' => $wkaowkoa,
+                    'nama_pengarang' => $request->nama_pengarang[$i],
+                    'tipe_pengarang' => $request->tipe_pengarang[$i],
+                    'jenis_pengarang' => $request->jenis_pengarang[$i],
+                ];
+                $teuteu = DB::table('data_pengarang')->insert($teu);
+            }
+            for ($i = 0; $i < $numbsub; $i++) {
+
+                $sub = [
+                    'id_dokumen' => $wkaowkoa,
+                    'subyek' => $request->subyek[$i],
+                    'tipe_subyek' => $request->tipe_subyek[$i],
+                    'jenis_subyek' => $request->jenis_subyek[$i],
+                    'status' => $request->status[$i],
+                ];
+                $subsub = DB::table('data_subyek')->insert($sub);
+            }
+
+            for ($i = 0; $i < $numblamp; $i++) {
+                
+                $files = $request->file('dokumen_lampiran');
+                $destinationPath = public_path() . "/dokumen/data_dokumen//";
+                $file = $files[$i];
+                if ($file) {
+                    $extension = $file->getClientOriginalExtension(); // file extension
+                    $fileName = 'lampiran' . uniqid() . '.' . $extension; // file name with extension
+                    $file->move($destinationPath, $fileName); // move file to our uploads path
+
+                } else {
+                    // handle error here
+                    return redirect()->back()->with(['error' => 'gagal menambah lampiran']);
+                }                
+
+                $lamp = [
+                    'id_dokumen' => $wkaowkoa,
+                    'judul_lampiran' => $request->judul_lampiran[$i],
+                    'dokumen_lampiran' => $fileName,
+                    'url_lampiran' => $request->url_lampiran[$i],
+                    'deskripsi_lampiran' => $request->deskripsi_lampiran[$i],
+                    'akses_lampiran' => $request->akses_lampiran[$i],
+                    'pembatasan_lampiran' => $request->pembatasan_lampiran[$i],
+                ];
+                
+                $lampir = DB::table('data_lampiran')->insert($lamp);
+            }
+
+            for ($i = 0; $i < $numbperter; $i++) {
+                
+                $files = $request->file('file_peraturan_terkait');
+                $destinationPath = public_path() . "/dokumen/data_dokumen//";
+                $file = $files[$i];
+                if ($file) {
+                    $extension = $file->getClientOriginalExtension(); // file extension
+                    $fileName = 'perter' . uniqid() . '.' . $extension; // file name with extension
+                    $file->move($destinationPath, $fileName); // move file to our uploads path
+
+                } else {
+                    // handle error here
+                    return redirect()->back()->with(['error' => 'gagal menambah peraturan terkait']);
+                }                
+
+                $peter = [
+                    'id_dokumen' => $wkaowkoa,
+                    'peraturan_terkait' => $request->peraturan_terkait[$i],
+                    'file_peraturan_terkait' => $fileName,
+                ];
+                
+                $peeter = DB::table('peraturan_terkait')->insert($peter);
+            }
+
+            for ($i = 0; $i < $numbdocter; $i++) {
+                
+                $files = $request->file('file_document_terkait');
+                $destinationPath = public_path() . "/dokumen/data_dokumen//";
+                $file = $files[$i];
+                if ($file) {
+                    $extension = $file->getClientOriginalExtension(); // file extension
+                    $fileName = 'docter' . uniqid() . '.' . $extension; // file name with extension
+                    $file->move($destinationPath, $fileName); // move file to our uploads path
+
+                } else {
+                    // handle error here
+                    return redirect()->back()->with(['error' => 'gagal menambah document terkait']);
+                }                
+
+                $docter = [
+                    'id_dokumen' => $wkaowkoa,
+                    'document_terkait' => $request->document_terkait[$i],
+                    'file_document_terkait' => $fileName,
+                ];
+                
+                $dog = DB::table('peraturan_terkait')->insert($docter);
+            }
+            
+            for ($i = 0; $i < $numbstat; $i++) {
+//                $pinjam = date('Y-m-d', strtotime(trim($request->tglpeminjaman[$i])));
+//                $kembali = date('Y-m-d', strtotime(trim()));
+                $stat = [
+                    'id_dokumen' => $wkaowkoa,
+                    'status_peraturan' => $request->status_peraturan[$i],
+                    'id_dokumen_target' => $request->id_dokumen_target[$i],
+                    'catatan_status_peraturan' => $request->catatan_status_peraturan[$i],
+                ];
+                $stata = DB::table('data_status')->insert($stat);
+            }
+            return redirect()->back()->with(['success' => 'A Document Added Successfully!']);
+        } catch (Exception $e) {
+            return redirect()->back()->with(['error' => 'A Document Added Failed Successfully!']);
+        }
+
+    }
+
+    public function loadTarget(Request $request)
+    {
+        if ($request->has('q')) {
+            $cari = $request->q;
+            $data = DB::table('document')->select('id', 'judul')->where('judul', 'LIKE', '%'.$cari.'%')->get();
+            return response()->json($data);
+        }
+    }
+
+    public function loadNamaPengarang(Request $request)
+    {
+        if ($request->has('q')) {
+            $cari = $request->q;
+            $data = DB::table('pengarang')->select('id', 'name')->where('name', 'LIKE', '%'.$cari.'%')->get();
+            return response()->json($data);
+        }
+    }
+
+    public function loadNamaSubyek(Request $request)
+    {
+        if ($request->has('q')) {
+            $cari = $request->q;
+            $data = DB::table('data_subyek')->select('id', 'subyek')->where('subyek', 'LIKE', '%'.$cari.'%')->get();
+            return response()->json($data);
+        }
+    }
+
+    public function loadNP(Request $request)
+    {
+        if ($request->has('q')) {
+            $cari = $request->q;
+            $data = DB::table('pengarang')->select('id', 'name')->where('name', 'LIKE', '%'.$cari.'%')->get();
+            return response()->json($data);
+        }
+    }
+
+    //hirarki daerah
+    public function daerahHirarki()
+    {
+        ini_set('memory_limit', '-1');
+        $id = $_GET["id"];
+        $longId = count(explode(":", $id));
+        $docType = DocumentType::where('second_id', 'like', '' . $id . ':%')->get();
+        $luar = '<option value="0">--Silahkan Pilih--</option>';
+        if ($longId == 1) {
+            foreach ($docType as $value) {
+                if (count(explode(":", $value->second_id)) == 2) {
+                    $luar .= '<option value="' . $value->second_id . '">' . $value->second_id . ' - ' . $value->name . '</option>';
+                }
+            }
+        } else if ($longId == 2) {
+            foreach ($docType as $value) {
+                if (count(explode(":", $value->second_id)) == 3) {
+                    $luar .= '<option value="' . $value->second_id . '">' . $value->second_id . ' - ' . $value->name . '</option>';
+                }
+            }
+        }
+
+        if ($id == 0) {
+            $luar = '';
+        }
+
+        echo $luar;
+    }
+
+    //jenis dokumen
+    public function docHirarki()
+    {
+        ini_set('memory_limit', '-1');
+        $id = $_GET["id"];
+        $longId = count(explode(":", $id));
+        $docType = DocumentType::where('second_id', 'like', '' . $id . ':%')->get();
+        $luar = '<option value="">--Silahkan Pilih--</option>';
+        if ($longId == 1) {
+            foreach ($docType as $value) {
+                if (count(explode(":", $value->second_id)) == 2) {
+                    $luar .= '<option value="' . $value->second_id . '">' . $value->second_id . ' - ' . $value->name . '</option>';
+                }
+            }
+        } else if ($longId == 2) {
+            foreach ($docType as $value) {
+                if (count(explode(":", $value->second_id)) == 3) {
+                    $luar .= '<option value="' . $value->second_id . '">' . $value->second_id . ' - ' . $value->name . '</option>';
+                }
+            }
+        }
+
+        if ($id == 0) {
+            $luar = '';
+        }
+
+        echo $luar;
+    }
+
+    public function indexpdgetdata(Request $request)
+    {
+        // $data = Dokumen::GET_DOC();
+
+        // return Datatables::of($data)->make();
+        $columns = array(
+            0 => 'judul',
+            1 => 'tahun_terbit',
+            2 => 'nomor_peraturan',
+            3 => 'nama_doctype',
+            4 => 'jumlah_eksemplar',
+            5 => 'status_terakhir',
+            6 => 'tanggal_penetapan',
+            7 => '_created_by',
+            8 => 'created_at',
+            9 => '_updated_by',
+            10 => 'updated_at'
+          );
+        
+          $totalData = DB::table('document')->count();
+          $limit = $request->input('length');
+          $start = $request->input('start');
+          $order = $columns[$request->input('order.0.column')];
+          $dir = $request->input('order.0.dir');
+        
+          if (empty($request->input('search.value'))) {
+            $posts = DB::table('document')
+                    ->select('document.*', 'document_type.name as nama_doctype')
+                    ->join('document_type', 'document.jenis_peraturan', 'document_type.id')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+        
+            $totalFiltered =  DB::table('document')->count();
+          } else {
+            $search = $request->input('search.value');
+            $posts =  DB::table('document')
+                    ->select('document.*', 'document_type.name as nama_doctype')
+                    ->join('document_type', 'document.jenis_peraturan', 'document_type.id')
+                    ->where('judul','like', '%'.$search.'%')
+                    ->orwhere('tahun_terbit','like', '%'.$search.'%')
+                    ->orwhere('nomor_peraturan','like', '%'.$search.'%')
+                    ->orwhere('nama_doctype','like', '%'.$search.'%')
+                    ->orwhere('jumlah_eksemplar','like', '%'.$search.'%')
+                    ->orwhere('status_terakhir','like', '%'.$search.'%')
+                    ->orwhere('tanggal_penetapan','like', '%'.$search.'%')
+                    ->orwhere('_created_by','like', '%'.$search.'%')
+                    ->orwhere('created_at','like', '%'.$search.'%')
+                    ->orwhere('_updated_by','like', '%'.$search.'%')
+                    ->orwhere('updated_at','like', '%'.$search.'%')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+            $totalFiltered =  DB::table('document')
+                            ->select('document.*', 'document_type.name as nama_doctype')
+                            ->join('document_type', 'document.jenis_peraturan', 'document_type.id')
+                            ->where('judul','like', '%'.$search.'%')
+                            ->orwhere('tahun_terbit','like', '%'.$search.'%')
+                            ->orwhere('nomor_peraturan','like', '%'.$search.'%')
+                            ->orwhere('nama_doctype','like', '%'.$search.'%')
+                            ->orwhere('jumlah_eksemplar','like', '%'.$search.'%')
+                            ->orwhere('status_terakhir','like', '%'.$search.'%')
+                            ->orwhere('tanggal_penetapan','like', '%'.$search.'%')
+                            ->orwhere('_created_by','like', '%'.$search.'%')
+                            ->orwhere('created_at','like', '%'.$search.'%')
+                            ->orwhere('_updated_by','like', '%'.$search.'%')
+                            ->orwhere('updated_at','like', '%'.$search.'%')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order, $dir)
+                            ->count();
+          }
+        
+          $data = array();
+        
+          if ($posts) {
+            $count = $start+1;
+            foreach ($posts as $d) {
+              $token = csrf_token();
+              $nestedData['ckbx'] = '<input type="checkbox" name="ck[]" class="checkbox" value="{{ $d->id }}">';
+              $nestedData['judul'] = $d->judul;
+              $nestedData['tahun_terbit'] = $d->tahun_terbit;
+              $nestedData['nomor_peraturan'] = $d->nomor_peraturan;
+              $nestedData['nama_doctype'] = $d->nama_doctype;
+              $nestedData['jumlah_eksemplar'] = $d->jumlah_eksemplar;
+              $nestedData['status_terakhir'] = $d->status_terakhir;
+              $nestedData['tanggal_penetapan'] = $d->tanggal_penetapan;
+              $nestedData['_created_by'] = $d->_created_by;
+              $nestedData['created_at'] = $d->created_at;
+              $nestedData['_updated_by'] = $d->_updated_by;
+              $nestedData['updated_at'] = $d->updated_at;
+              $nestedData['aksi'] = '<button type="button" class="btn btn-sm btn-info" onclick="edit(this)" data-item="{{json_encode($d)}}"><i class="fa fa-edit text-white"></i></button>';
+              $data[] = $nestedData;
+              $count++;
+            }
+          }
+        
+          $json_data = array(
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => intval($totalData),
+            'recordsFiltered' => intval($totalFiltered),
+            'data' => $data
+          );
+        
+          echo json_encode($json_data);
+    }
+}

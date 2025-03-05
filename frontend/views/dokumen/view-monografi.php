@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Dokumens', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<section class="page-title-section bg-img cover-background" data-overlay-dark="7" data-background="../frontend/assets/img/banner/header.jpg">
+<section class="page-title-section bg-img cover-background" data-overlay-dark="7" data-background="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/banner/header.jpg">
   <div class="container">
     <h1>Monografi Detail</h1>
     <ul class="text-center">

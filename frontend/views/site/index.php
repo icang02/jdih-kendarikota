@@ -322,8 +322,8 @@ $pejabat = [
           <div class="card row h-100">
             <?php
             // Cek apakah file gambar ada
-            $imagePath = Yii::getAlias("@webroot/common/dokumen/{$data->image}");
-            $imageUrl = $data->image && file_exists($imagePath) ? '@web/common/dokumen/' . $data->image : 'frontend/assets/img/default.jpg';
+            $imagePath = Yii::getAlias("@webroot/common/dokumen/$data->image");
+            $imageUrl = is_file($imagePath) ? Yii::$app->request->hostInfo . "/common/dokumen/$data->image" : Yii::$app->request->hostInfo . '/frontend/assets/img/default.jpg';
             echo Html::img($imageUrl, ['class' => 'card-img-top col-lg-2']);
             ?>
 
@@ -389,9 +389,11 @@ $pejabat = [
             <div class="card h-100">
               <?php
               $imagePath = Yii::getAlias("@webroot/common/dokumen/$data->image");
-              $imageUrl = $data->image && file_exists($imagePath) ? "@web/common/dokumen/$data->image" : 'frontend/assets/img/default.jpg';
-              echo Html::a(Html::img($imageUrl, ['class' => 'card-img-top rounded']), ['berita/view', 'id' => $data->id]);
+              $imageUrl = is_file($imagePath) ? Yii::$app->request->hostInfo . "/common/dokumen/$data->image" : Yii::$app->request->hostInfo . '/frontend/assets/img/default.jpg';
               ?>
+              <a href="<?= Yii::$app->request->hostInfo . "/berita/view/$data->id"  ?>">
+                <img src="<?= $imageUrl ?>" alt="img" class="card-img-top rounded">
+              </a>
 
               <div class="card-body padding-30px-all">
                 <div class="margin-10px-bottom">

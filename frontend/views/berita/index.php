@@ -2,12 +2,13 @@
 
 use yii\helpers\Html;
 use yii\widgets\ListView;
+use yii\widgets\ActiveForm;
 
 $this->title = 'Berita';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<section class="page-title-section bg-img cover-background" data-overlay-dark="7" data-background="../frontend/assets/img/banner/header.jpg">
+<section class="page-title-section bg-img cover-background" data-overlay-dark="7" data-background="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/banner/header.jpg">
   <div class="container">
     <h1>Berita</h1>
     <ul class="text-center">
@@ -36,33 +37,19 @@ $this->params['breadcrumbs'][] = $this->title;
       </div>
     </div>
     <div class="row">
-      <?= ListView::widget(
-        [
-          'summary' => false,
-          'dataProvider' => $dataProvider,
-          //'filterModel' => $searchModel,
-          // 'itemOptions' => ['tag' => null],
-          'options'      => [
-            'tag' => false,
-          ],
-          'itemOptions'  => [
-            'tag' => false,
-          ],
-          'itemView' => function ($model, $key, $index, $widget) {
-            $itemContent = $this->render(
-              '_data',
-              [
-                'model' => $model,
-                'index' => $index,
-                'key' => $key
-              ]
-            );
-            return $itemContent;
-          }
-
-        ]
-      );
-      ?>
+      <?= ListView::widget([
+        'summary'      => false,
+        'dataProvider' => $dataProvider,
+        'options'      => ['tag' => false],
+        'itemOptions'  => ['tag' => false],
+        'itemView'     => function ($model, $key, $index, $widget) {
+          return $this->render('_data', [
+            'model' => $model,
+            'index' => $index,
+            'key'   => $key
+          ]);
+        },
+      ]); ?>
     </div>
   </div>
 </section>

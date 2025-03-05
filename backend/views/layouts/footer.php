@@ -14,7 +14,7 @@ $user = User::find()->where(['username' => Yii::$app->user->identity->username])
 ?>
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <strong>Copyright &copy; 2020 <a href="https://bphn.go.id">Badan Pembinaan Hukum Nasional</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2025 <a href="https://bphn.go.id">Badan Pembinaan Hukum Nasional</a>.</strong> All rights reserved.
   </div>
   User : <span class="label label-default label-md"><?php echo $user->username; ?></span> | Hak Akses :
   <?php //$group = AuthAssignment::find()->(['user_id'=>$user->user_id])->all();

@@ -12,9 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box-body no-padding">
 
-    <?= $this->render('_form-create', [
+  <?= $this->render('_form-create', [
     'model' => $model,
-    ]) ?>
+  ]) ?>
 </div>
-
-

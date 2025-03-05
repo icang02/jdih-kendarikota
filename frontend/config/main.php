@@ -42,16 +42,21 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        // 'urlManager' => [
-        //     'enablePrettyUrl' => true,
-        //     'showScriptName' => false,
-        //     'rules' => [
-        //         '/' => 'site/index',
-        //         'kontak' => 'site/kontak',
-        //         '/rancangan' => 'rancangan/index',
-        //         '/pengumuman' => 'pengumuman/index',
-        //     ],
-        // ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            //'suffix' => '.html',
+            'rules' => [
+
+                // 'article/<id:\d+>/<slug>' => 'article/view',
+                //'<controller:\w+>/<id:\d+>/' => '<controller>/view',
+
+                '<controller:\w+>/<id:\d+>/<slug>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                // '<controller:\w+>/<action:\w+>/<id:\d+>/<usr:\d+>' => '<controller>/<action>',
+            ],
+        ],
     ],
     'params' => $params,
 ];

@@ -68,6 +68,7 @@ class PeraturanController extends Controller
      */
     public function actionView($id)
     {
+
         $teu = new ActiveDataProvider([
             'query' => DataPengarang::find()->where(['id_dokumen' => $id]),
             'pagination' => ['pageSize' => 10]
@@ -259,11 +260,11 @@ class PeraturanController extends Controller
             $model->tahun_ln =  date('Y', strtotime($_POST['Peraturan']['tgl_diundangkan']));
             */
         } else {
-
+           
             return $this->render('create2', [
                 'model' => $model,
                 'lampiran' => $lampiran,
-
+     
 
             ]);
         }
@@ -545,7 +546,7 @@ class PeraturanController extends Controller
 
     public function actionUbahLampiran($id)
     {
-        $model = DataLampiran::find()->where(['id_dokumen' => $id])->one();
+        $model = DataLampiran::find()->where(['id_dokumen'=>$id])->one();
         $old = $model->dokumen_lampiran;
         if ($model->load(Yii::$app->request->post())) {
 
@@ -662,8 +663,8 @@ class PeraturanController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->id_dokumen = $id;
             $dokumen = DataLampiran::findOne($model->urutan);
-            if (!empty($dokumen)) {
-                $model->document_terkait = $dokumen->dokumen_lampiran;
+            if(!empty($dokumen)){
+            	$model->document_terkait = $dokumen->dokumen_lampiran;
             }
             // $document_terkait = UploadedFile::getInstance($model, 'document_terkait');
 
@@ -696,9 +697,9 @@ class PeraturanController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->id_dokumen = $id;
 
-            $dokumen = DataLampiran::find()->where(['id_dokumen' => $model->urutan])->one();
-            if (!empty($dokumen)) {
-                $model->document_terkait = $dokumen->dokumen_lampiran;
+            $dokumen = DataLampiran::find()->where(['id_dokumen'=>$model->urutan])->one();
+            if(!empty($dokumen)){
+            	$model->document_terkait = $dokumen->dokumen_lampiran;
             }
             if ($model->save()) {
                 $log = new LogPustakawan();
@@ -966,7 +967,7 @@ class PeraturanController extends Controller
                             $model4->status_terakhir = '-';
                             $model4->save(false);
                         }
-                        break;
+                        break;                        
                 }
 
                 $log = new LogPustakawan();
@@ -1012,74 +1013,74 @@ class PeraturanController extends Controller
         $model = DataStatus::findOne($id);
         $model->delete();
 
-        switch ($model->status_peraturan) {
-            case 'dicabut':
+                switch ($model->status_peraturan) {
+                    case 'dicabut':
 
 
-                $model3 = Peraturan::findOne($model->id_dokumen);
-                $model3->status = 'Berlaku';
-                $model3->status_terakhir = '';
-                $model3->save(false);
+                        $model3 = Peraturan::findOne($model->id_dokumen);
+                        $model3->status = 'Berlaku';
+                        $model3->status_terakhir = '';
+                        $model3->save(false);
 
-                $model4 = Peraturan::findOne($model->id_dokumen_target);
+                        $model4 = Peraturan::findOne($model->id_dokumen_target);
 
-                if (!empty($model4)) {
-                    $model4->status = 'Berlaku';
-                    $model4->status_terakhir = '';
-                    $model4->save(false);
+                        if (!empty($model4)) {
+                            $model4->status = 'Berlaku';
+                            $model4->status_terakhir = '';
+                            $model4->save(false);
+                        }
+                        break;
+
+                    case 'mencabut':
+
+
+                        $model3 = Peraturan::findOne($model->id_dokumen);
+                        $model3->status = 'Berlaku';
+                        $model3->status_terakhir = '';
+                        $model3->save(false);
+
+                        $model4 = Peraturan::findOne($model->id_dokumen_target);
+
+                        if (!empty($model4)) {
+                            $model4->status = 'Berlaku';
+                            $model4->status_terakhir = '';
+                            $model4->save(false);
+                        }
+                        break;
+
+                    case 'mengubah':
+
+                        $model3 = Peraturan::findOne($model->id_dokumen);
+                        $model3->status = 'Berlaku';
+                        $model3->status_terakhir = 'Berlaku';
+                        $model3->save(false);
+
+                        $model4 = Peraturan::findOne($model->id_dokumen_target);
+
+                        if (!empty($model4)) {
+                            $model4->status = 'Berlaku';
+                            $model4->status_terakhir = 'Berlaku';
+                            $model4->save(false);
+                        }
+                        break;
+                        break;
+
+                    case 'diubah':
+
+                        $model3 = Peraturan::findOne($model->id_dokumen);
+                        $model3->status = 'Berlaku';
+                        $model3->status_terakhir = 'Berlaku';
+                        $model3->save(false);
+
+                        $model4 = Peraturan::findOne($model->id_dokumen_target);
+
+                        if (!empty($model4)) {
+                            $model4->status = 'Berlaku';
+                            $model4->status_terakhir = 'Berlaku';
+                            $model4->save(false);
+                        }
+                        break;
                 }
-                break;
-
-            case 'mencabut':
-
-
-                $model3 = Peraturan::findOne($model->id_dokumen);
-                $model3->status = 'Berlaku';
-                $model3->status_terakhir = '';
-                $model3->save(false);
-
-                $model4 = Peraturan::findOne($model->id_dokumen_target);
-
-                if (!empty($model4)) {
-                    $model4->status = 'Berlaku';
-                    $model4->status_terakhir = '';
-                    $model4->save(false);
-                }
-                break;
-
-            case 'mengubah':
-
-                $model3 = Peraturan::findOne($model->id_dokumen);
-                $model3->status = 'Berlaku';
-                $model3->status_terakhir = 'Berlaku';
-                $model3->save(false);
-
-                $model4 = Peraturan::findOne($model->id_dokumen_target);
-
-                if (!empty($model4)) {
-                    $model4->status = 'Berlaku';
-                    $model4->status_terakhir = 'Berlaku';
-                    $model4->save(false);
-                }
-                break;
-                break;
-
-            case 'diubah':
-
-                $model3 = Peraturan::findOne($model->id_dokumen);
-                $model3->status = 'Berlaku';
-                $model3->status_terakhir = 'Berlaku';
-                $model3->save(false);
-
-                $model4 = Peraturan::findOne($model->id_dokumen_target);
-
-                if (!empty($model4)) {
-                    $model4->status = 'Berlaku';
-                    $model4->status_terakhir = 'Berlaku';
-                    $model4->save(false);
-                }
-                break;
-        }
 
 
         $log = new LogPustakawan();
@@ -1169,7 +1170,7 @@ class PeraturanController extends Controller
                 echo "<option value'" . $branch->name . "'>" . $branch->singkatan . "</option>";
             }
         } else {
-            echo "<option value'" . $dokumen->name . "'>" . $dokumen->singkatan . "</option>";
+            echo "<option value'" . $dokumen->name . "'>" . $dokumen->singkatan. "</option>";
         }
     }
 
@@ -1183,10 +1184,10 @@ class PeraturanController extends Controller
         //echo "<option></option>";
         if (count($rows) > 0) {
             foreach ($rows as $branch) {
-                echo "<option value'" . $branch->name . "'>" . $branch->singkatan . "</option>";
+                echo "<option value'" . $branch->name . "'>" . $branch->singkatan. "</option>";
             }
         } else {
-            echo "<option value'" . $dokumen->name . "'>" . $dokumen->singkatan . "</option>";
+            echo "<option value'" . $dokumen->name . "'>" . $dokumen->singkatan. "</option>";
         }
     }
 
@@ -1197,8 +1198,7 @@ class PeraturanController extends Controller
     }
 
 
-    public function actionLoadperaturan($q = null, $id = null)
-    {
+    public function actionLoadperaturan($q = null, $id = null) {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $out = ['results' => ['id' => '', 'text' => '']];
         if (!is_null($q)) {
@@ -1210,16 +1210,16 @@ class PeraturanController extends Controller
             $command = $query->createCommand();
             $data = $command->queryAll();
             $out['results'] = array_values($data);
-            // $data = Peraturan::find($id)->select('id, judul as text')->where(['like', 'judul', $q])->asArray()->all();
-            // $out['results'] = ArrayHelper::map($data); 
-        } elseif ($id > 0) {
+           // $data = Peraturan::find($id)->select('id, judul as text')->where(['like', 'judul', $q])->asArray()->all();
+           // $out['results'] = ArrayHelper::map($data); 
+        }
+        elseif ($id > 0) {
             $out['results'] = ['id' => $id, 'text' => Peraturan::find($id)->judul];
         }
         return $out;
     }
 
-    public function actionLoadteu($q = null, $id = null)
-    {
+    public function actionLoadteu($q = null, $id = null) {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $out = ['results' => ['id' => '', 'text' => '']];
         if (!is_null($q)) {
@@ -1231,11 +1231,13 @@ class PeraturanController extends Controller
             $command = $query->createCommand();
             $data = $command->queryAll();
             $out['results'] = array_values($data);
-            // $data = Peraturan::find($id)->select('id, judul as text')->where(['like', 'judul', $q])->asArray()->all();
-            // $out['results'] = ArrayHelper::map($data); 
-        } elseif ($id > 0) {
+           // $data = Peraturan::find($id)->select('id, judul as text')->where(['like', 'judul', $q])->asArray()->all();
+           // $out['results'] = ArrayHelper::map($data); 
+        }
+        elseif ($id > 0) {
             $out['results'] = ['id' => $id, 'text' => Peraturan::find($id)->judul];
         }
         return $out;
-    }
+    }    
+
 }

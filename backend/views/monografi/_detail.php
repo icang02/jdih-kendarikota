@@ -39,17 +39,17 @@ use yii\widgets\DetailView;
                 'attribute' => 'tempat_terbit',
                 'label' => 'Tempat Terbit',
             ],
-            'isbn',
+'isbn',
             'nomor_panggil',
             'deskripsi_fisik',
             'klasifikasi:ntext',
-
-            [
-                'label' => 'Anotasi',
-                'attribute' => 'sumber',
-            ],
+        
+[
+'label'=>'Anotasi',
+'attribute'=>'sumber',
+],
             'bahasa:ntext',
-            'bidang_hukum',
+'bidang_hukum',
 
 
 
@@ -71,7 +71,7 @@ use yii\widgets\DetailView;
                 'label' => 'Cover',
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return Html::img($data->gambar_sampul ? "/common/dokumen/$data->gambar_sampul" : '/frontend/assets/img/default.jpg', ['alt' => 'myImage', 'width' => '300', 'height' => 'auto']);
+                    return Html::img(\Yii::getAlias('@imageurl') . '/common/dokumen/' . $data->gambar_sampul, ['alt' => 'myImage', 'width' => '300', 'height' => 'auto']);
                 },
             ],
 

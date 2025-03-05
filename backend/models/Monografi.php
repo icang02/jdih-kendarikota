@@ -89,7 +89,7 @@ class Monografi extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['jenis_peraturan', 'judul', 'tempat_terbit',  'tahun_terbit', 'penerbit', 'sumber_perolehan'], 'required'],
+            [['jenis_peraturan', 'judul', 'tempat_terbit',  'tahun_terbit', 'penerbit','sumber_perolehan'], 'required'],
             [['tipe_dokumen', 'daerah', 'hit_see', 'hit_download'], 'integer'],
             [['judul', 'teu', 'bentuk_peraturan', 'singkatan_jenis', 'tempat_terbit', 'penerbit',  'sumber', 'bahasa', 'bidang_hukum', 'pernyataan_tanggung_jawab'], 'string'],
             [['tanggal_penetapan', 'tanggal_dibacakan', 'created_at', 'updated_at', 'tanggal_pengundangan'], 'safe'],

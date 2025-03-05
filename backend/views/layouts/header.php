@@ -67,7 +67,7 @@ use yii\helpers\Html;
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 
-            <?= Html::img('/backend/img/default-user.png', ['class' => 'user-image', 'alt' => 'myImage', 'width' => '160', 'height' => 'auto']); ?>
+            <?= Html::img(\Yii::getAlias('@imageurl') . '/common/dokumen/' . \Yii::$app->user->identity->picture, ['class' => 'user-image', 'alt' => 'myImage', 'width' => '160', 'height' => 'auto']); ?>
 
             <span class="hidden-xs"><?= \Yii::$app->user->identity->username ?></span>
           </a>

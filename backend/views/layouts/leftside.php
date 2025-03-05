@@ -16,7 +16,9 @@ use mdm\admin\components\MenuHelper;
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <?= Html::img('/backend/img/default-user.png', ['class' => 'img-circle', 'alt' => 'myImage', 'width' => '160', 'height' => 'auto']); ?>
+
+                <?= Html::img(\Yii::getAlias('@imageurl') . '/common/dokumen/' . \Yii::$app->user->identity->picture, ['class' => 'img-circle', 'alt' => 'myImage', 'width' => '160', 'height' => 'auto']); ?>
+
             </div>
             <div class="pull-left info">
                 <p><?= \Yii::$app->user->identity->username ?></p>

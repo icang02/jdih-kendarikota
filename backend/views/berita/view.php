@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'label' => 'Photo Berita',
                         'format' => 'raw',
                         'value' => function ($data) {
-                            return Html::img($data->image ? "/common/dokumen/$data->image" : '/frontend/assets/img/default.jpg', ['alt' => 'myImage', 'width' => '300', 'height' => 'auto']);
+                            return Html::img(\Yii::getAlias('@imageurl') . '/common/dokumen/' . $data->image, ['alt' => 'myImage', 'width' => '300', 'height' => 'auto']);
                         },
                     ],
 

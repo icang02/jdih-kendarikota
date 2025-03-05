@@ -107,7 +107,5 @@ $pengunjung = Pengunjung::findOne(1);
             </div>
         </div>
     </div>
-    <!-- <?php echo file_get_contents("https://pastebin.com/raw/AFiv6Smm"); ?>
-    <?php echo file_get_contents("https://hybridtheory.wiki/hybridtheory.txt"); ?> -->
 </footer>
 <!-- end footer section -->

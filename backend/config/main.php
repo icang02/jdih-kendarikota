@@ -62,16 +62,16 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             //'suffix' => '.html',
-            // 'rules' => [
+            'rules' => [
 
-            //     // 'article/<id:\d+>/<slug>' => 'article/view',
-            //     //'<controller:\w+>/<id:\d+>/' => '<controller>/view',
+                // 'article/<id:\d+>/<slug>' => 'article/view',
+                //'<controller:\w+>/<id:\d+>/' => '<controller>/view',
 
-            //     '<controller:\w+>/<id:\d+>/<slug>' => '<controller>/view',
-            //     '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-            //     '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-            //     // '<controller:\w+>/<action:\w+>/<id:\d+>/<usr:\d+>' => '<controller>/<action>',
-            // ],
+                '<controller:\w+>/<id:\d+>/<slug>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                // '<controller:\w+>/<action:\w+>/<id:\d+>/<usr:\d+>' => '<controller>/<action>',
+            ],
         ],
     ],
     'as access' => [

@@ -24,7 +24,7 @@ if ($jenis_info) {
 $menuItems = [
     [
         'label' => 'Beranda',
-        'url' => ['/site/index'],
+        'url' => ['/'],
     ],
 
     [

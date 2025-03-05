@@ -273,13 +273,13 @@ $this->params['breadcrumbs'][] = $this->title;
                       <i class="fa-solid fa-file-lines"></i>&nbsp; Lampiran <?= $i ?>
                     </a>
                   <?php } else { ?>
-                    <button disabled style="background: #0069A8; opacity: 0.6;" class="btn-custom">
+                    <button disabled style="background: #0069A8; opacity: 0.5;" class="btn-custom">
                       <i class="fa-solid fa-file-lines"></i>&nbsp; Lampiran <?= $i ?>
                     </button>
                   <?php } ?>
                 <?php } ?>
               <?php } else { ?>
-                <button disabled style="background: #0069A8; opacity: 0.6;" class="btn-custom">
+                <button disabled style="background: #0069A8; opacity: 0.5;" class="btn-custom">
                   <i class="fa-solid fa-file-lines"></i>&nbsp; Lampiran
                 </button>
               <?php } ?>
@@ -293,7 +293,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     Abstrak
                   </a>
                 <?php } else { ?>
-                  <button disabled style="opacity: 0.6;" class="btn-custom">
+                  <button disabled style="opacity: 0.5;" class="btn-custom">
                     Abstrak
                   </button>
                 <?php } ?>

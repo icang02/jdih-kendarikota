@@ -12,12 +12,12 @@ $pejabat = [
     'gambar'  => 'frontend/assets/img/1.jpeg',
   ],
   [
-    'nama'    => 'dr. Hj. SISKA KARINA IMRAN, SKM',
+    'nama'    => 'dr. Hj. Siska Karina Imran, SKM',
     'jabatan' => 'Wali Kota Kendari',
     'gambar'  => 'frontend/assets/img/2.jpg',
   ],
   [
-    'nama'    => 'Dr. Kurniawan Ilyas,S.H.,.S.Psi, M.H',
+    'nama'    => 'Dr. Kurniawan Ilyas, S.H.,.S.Psi, M.H',
     'jabatan' => 'Kepala Bagian Hukum Setda Kota Kendari',
     'gambar'  => 'frontend/assets/img/3.jpg',
   ]

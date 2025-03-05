@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
           <div class="post">
             <div class="post-img">
 
-              <?= Html::img('@web/common/dokumen/' . $model->image, ['class' => 'rounded']); ?>
+              <?= Html::img(is_file(Yii::getAlias("@webroot/common/dokumen/$model->image")) ? Yii::$app->request->hostInfo . "/common/dokumen/$model->image" : Yii::$app->request->hostInfo . "/frontend/assets/img/default.jpg", ['class' => 'rounded']); ?>
 
             </div>
             <div class="content">

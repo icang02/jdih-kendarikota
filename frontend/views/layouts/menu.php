@@ -1,9 +1,5 @@
 <?php
 
-use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\helpers\Url;
 use yii\widgets\Menu;
 ?>
 
@@ -28,11 +24,11 @@ $menuItems = [
   ],
 
   [
-    'label' => 'Profil',
-    'url' => '#',
-    'options' => ['class' => 'has-sub'],
+    'label'    => 'Profil',
+    'url'      => '#',
+    'options'  => ['class' => 'has-sub'],
     'template' => '<span class="submenu-button"></span><a href="javascript:void(0)" class="href_class">{label}</a>',
-    'items' => [
+    'items'    => [
       ['label' => 'Sekilas Sejarah', 'url' => ['site/sekilas-sejarah']],
       ['label' => 'Dasar Hukum', 'url' => ['site/dasar-hukum']],
       ['label' => 'Visi ', 'url' => ['site/visi']],
@@ -42,16 +38,15 @@ $menuItems = [
   ],
 
   [
-    'label' => 'Jenis Dokumen',
-    'url' => '#',
-    'options' => ['class' => 'has-sub'],
-    'activateItems' => true,
+    'label'          => 'Jenis Dokumen',
+    'url'            => '#',
+    'options'        => ['class' => 'has-sub'],
+    'activateItems'  => true,
     'activeCssClass' => 'active',
     // 'template' => '<span class="submenu-button"></span><span class="submenu-button"></span><a href="{url}">{label}</a>',
-    'template' => '<span class="submenu-button"></span><a href={url}>{label}</a>',
+    'template'       => '<span class="submenu-button"></span><a href={url}>{label}</a>',
 
     'items' => [
-
       ['label' => 'Peraturan dan Keputusan', 'url' => ['dokumen/peraturan']],
       ['label' => 'Monografi', 'url' => ['dokumen/monografi']],
       // ['label' => 'Penelitian Hukum', 'url' => ['dokumen/penelitian-hukum']],
@@ -67,14 +62,14 @@ $menuItems = [
   ],
   ['label' => 'Pengumuman', 'url' => ['pengumuman/index']],
   [
-    'label' => 'Informasi Hukum',
-    'url' => '#',
-    'options' => ['class' => 'has-sub'],
-    'activateItems' => true,
+    'label'          => 'Informasi Hukum',
+    'url'            => '#',
+    'options'        => ['class' => 'has-sub'],
+    'activateItems'  => true,
     'activeCssClass' => 'active',
     // 'template' => '<span class="submenu-button"></span><span class="submenu-button"></span><a href="{url}">{label}</a>',
     'template' => '<span class="submenu-button"></span><a href={url}>{label}</a>',
-    'items' => $jenis
+    'items'    => $jenis
   ],
   ['label' => 'Berita', 'url' => ['berita/index']],
   //   ['label' => 'UPT Kanwil', 'url' => ['site/upt']],
@@ -93,17 +88,17 @@ if (Yii::$app->user->isGuest) {
   $menuItems[] = ['label' => 'Profile User', 'url' => ['/profile/index']];
   $menuItems[] = ['label' => 'Sign out', 'url' => ['/site/logout'],  ['data' => ['method' => 'post']]];
 }
+
 echo Menu::widget([
   'items' => $menuItems,
   // 'activateItems' => true,
   'options' => [
     'class' => 'navbar-nav ml-left',
-    'id' => 'nav',
+    'id'    => 'nav',
   ],
   'activateParents' => true,
   //'encodeLabels' => false,
   'activeCssClass' => 'current',
   //'submenuTemplate' => "\n<ul class='has-sub'>\n{items}\n</ul>\n",
-
 ]);
 ?>

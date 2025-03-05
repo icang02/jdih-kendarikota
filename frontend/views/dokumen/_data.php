@@ -43,12 +43,12 @@ $domain = yii\helpers\Url::base(true);
                 <i class="fa-solid fa-file-lines"></i>&nbsp; Download
               </a>
             <?php } else { ?>
-              <button disabled style="background: #0069A8; opacity: 0.6;" class="btn-custom mr-3">
+              <button disabled style="background: #0069A8; opacity: 0.5;" class="btn-custom mr-3">
                 <i class="fa-solid fa-file-lines"></i>&nbsp; Download
               </button>
             <?php } ?>
           <?php } else { ?>
-            <button disabled style="background: #0069A8; opacity: 0.6;" class="btn-custom mr-3">
+            <button disabled style="background: #0069A8; opacity: 0.5;" class="btn-custom mr-3">
               <i class="fa-solid fa-file-lines"></i>&nbsp; Download
             </button>
           <?php } ?>
@@ -62,7 +62,7 @@ $domain = yii\helpers\Url::base(true);
                 Abstrak
               </a>
             <?php } else { ?>
-              <button disabled style="opacity: 0.6;" class="btn-custom mr-3">
+              <button disabled style="opacity: 0.5;" class="btn-custom mr-3">
                 Abstrak
               </button>
             <?php } ?>

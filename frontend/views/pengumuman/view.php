@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
 
             <?php if (!empty($model->dokumen) && is_file(Yii::getAlias("@webroot/common/dokumen/$model->dokumen"))) { ?>
-              <iframe src="<?= 'https://jdih.kendarikota.go.id/common/dokumen/' . $model->dokumen ?>" width="100%" height="600" style="border: 1px solid; border-radius: 16px;" allowfullscreen></iframe>
+              <iframe src="<?= Yii::$app->request->hostInfo . "/common/dokumen/$model->dokumen" ?>" width="100%" height="600" style="border: 1px solid; border-radius: 16px;" allowfullscreen></iframe>
             <?php } ?>
           </div>
           <!--  start post-->

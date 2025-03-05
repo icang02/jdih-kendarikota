@@ -114,11 +114,6 @@ AppAsset::register($this);
 
   <?php $this->endBody() ?>
 
-  <!-- Google Analytics Start -->
-
-
-
-  <!-- Google Analytics End -->
   <script>
     AOS.init();
   </script>

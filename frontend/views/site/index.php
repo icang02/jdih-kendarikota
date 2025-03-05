@@ -9,28 +9,28 @@ $pejabat = [
   [
     'nama'    => 'Amir Hasan, STP, SH, M.Si',
     'jabatan' => 'Pj. Sekretaris Daerah',
-    'gambar'  => 'frontend/assets/img/1.jpeg',
+    'gambar'  => Yii::$app->request->hostInfo . '/frontend/assets/img/1.jpeg',
   ],
   [
     'nama'    => 'dr. Hj. Siska Karina Imran, SKM',
     'jabatan' => 'Wali Kota Kendari',
-    'gambar'  => 'frontend/assets/img/2.jpg',
+    'gambar'  => Yii::$app->request->hostInfo . '/frontend/assets/img/2.jpg',
   ],
   [
     'nama'    => 'Dr. Kurniawan Ilyas, S.H.,.S.Psi, M.H',
     'jabatan' => 'Kepala Bagian Hukum Setda Kota Kendari',
-    'gambar'  => 'frontend/assets/img/3.jpg',
+    'gambar'  => Yii::$app->request->hostInfo . '/frontend/assets/img/3.jpg',
   ]
 ];
 ?>
 
 <!-- start banner -->
-<section class="bg-img screen-height cover-background line-banner" data-overlay-dark="7" data-background="frontend/assets/img/background.jpg">
+<section class="bg-img screen-height cover-background line-banner" data-overlay-dark="7" data-background="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/background.jpg">
   <div class="container position-relative">
     <div class="header-text display-table z-index-1 width-100">
       <div class="display-table-cell">
         <!-- start bannder headline text -->
-        <img src="frontend/assets/img/banner/kdi.png" data-aos="fade-up">
+        <img src="<?= Yii::$app->request->hostInfo . "/frontend/assets/img/banner/kdi.png" ?>" data-aos="fade-up">
         <p class="font-size18 xs-font-size16 text-white text-center" data-aos-delay="200" data-aos="fade-up">
           SELAMAT DATANG DI SITUS RESMI
         </p>
@@ -118,7 +118,7 @@ $pejabat = [
           <div class="feature-inner display-table">
             <div class="vertical-align-middle">
               <div class="icon">
-                <img src="frontend/assets/img/peraturan.svg" alt="">
+                <img src="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/peraturan.svg" alt="img">
               </div>
               <div class="content">
                 <h6><?= Dokumen::find()->total(1); ?>+</h6>
@@ -133,7 +133,7 @@ $pejabat = [
           <div class="feature-inner display-table">
             <div class="vertical-align-middle">
               <div class="icon">
-                <img src="frontend/assets/img/monogrofi.svg" alt="">
+                <img src="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/monogrofi.svg" alt="">
               </div>
               <div class="content">
                 <h6><?= Dokumen::find()->total(2); ?></h6>
@@ -148,7 +148,7 @@ $pejabat = [
           <div class="feature-inner display-table">
             <div class="vertical-align-middle">
               <div class="icon">
-                <img src="frontend/assets/img/artikel.svg" alt="">
+                <img src="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/artikel.svg" alt="">
               </div>
               <div class="content">
                 <h6><?= Dokumen::find()->total(3); ?></h6>
@@ -163,7 +163,7 @@ $pejabat = [
           <div class="feature-inner display-table">
             <div class="vertical-align-middle">
               <div class="icon">
-                <img src="frontend/assets/img/yurisprudensi.svg" alt="">
+                <img src="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/yurisprudensi.svg" alt="">
               </div>
               <div class="content">
                 <h6><?= Dokumen::find()->total(4); ?></h6>
@@ -187,7 +187,7 @@ $pejabat = [
     </div>
   </div>
 </section>
-<img src="frontend/assets/img/batas.svg" class="mb-5" style="width: 100%;">
+<img src="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/batas.svg" class="mb-5" style="width: 100%;">
 <!-- End featured categories Section -->
 
 <!-- Start peraturan terbaru -->
@@ -220,7 +220,7 @@ $pejabat = [
 <!-- End peraturan terbaru -->
 
 <!-- Start monografi -->
-<section class="document_hukum cover-background bg-img" data-overlay-dark="7" data-background="frontend/assets/img/background-2.jpg">
+<section class="document_hukum cover-background bg-img" data-overlay-dark="7" data-background="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/background-2.jpg">
   <div class="container">
     <div class="text-center margin-40px-bottom heading">
       <h3 class="margin-10px-bottom" style="font-size: 24px; color: #ff891e ;">Monografi Hukum</h3>

@@ -103,7 +103,7 @@ $pengunjung = Pengunjung::findOne(1);
         </ul>
       </div>
       <div class="float-left xs-width-100 text-center">
-        <p class="text-medium-black font-weight-600 margin-5px-top xs-no-margin-top">&copy; 2021 All Rights Reserved by <a class="text-black" href="https://bphn.go.id">BPHN</a></p>
+        <p class="text-medium-black font-weight-600 margin-5px-top xs-no-margin-top">&copy; 2025 All Rights Reserved by <a class="text-black" href="https://bphn.go.id">BPHN</a></p>
       </div>
     </div>
   </div>

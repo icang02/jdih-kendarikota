@@ -36,8 +36,27 @@ AppAsset::register($this);
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <!-- cart js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
 
+  <style>
+    .btn-custom {
+      background: rgb(255, 129, 11);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 0px 16px;
+      border-radius: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      outline: none;
+      border: none;
+    }
+
+    .btn-custom:hover,
+    .btn-custom:focus {
+      color: #fff;
+    }
+  </style>
+</head>
 
 <body>
 

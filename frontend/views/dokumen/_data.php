@@ -6,26 +6,6 @@ use frontend\models\DataLampiran;
 $domain = yii\helpers\Url::base(true);
 ?>
 
-<style>
-  .btn-custom {
-    background: rgb(255, 129, 11);
-    color: #fff;
-    font-size: 0.7rem;
-    padding: 0px 16px;
-    border-radius: 2px;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    outline: none;
-    border: none;
-  }
-
-  .btn-custom:hover,
-  .btn-custom:focus {
-    color: #fff;
-  }
-</style>
-
 <div class="border-bottom margin-40px-bottom padding-40px-bottom xs-padding-20px-bottom">
   <div class="card card-list border-0">
     <div class="row align-items-center">
@@ -40,7 +20,7 @@ $domain = yii\helpers\Url::base(true);
           </p>
         </div>
 
-        <p>
+        <p style="line-height: 24px;">
           <?= Html::a(
             $model->judul,
             ['/dokumen/view', 'id' => $model->id],

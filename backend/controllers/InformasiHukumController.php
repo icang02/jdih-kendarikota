@@ -117,7 +117,7 @@ class InformasiHukumController extends Controller
         $dokumen->saveAs($path);
       }
 
-
+      // Save model
       if ($model->save()) {
         Yii::$app->session->setFlash('success', 'Data InformasiHukum berhasil ditambahkan');
         return $this->redirect(['view', 'id' => $model->id]);

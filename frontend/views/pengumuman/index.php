@@ -41,33 +41,12 @@ $this->params['breadcrumbs'][] = $this->title;
       </div>
     </div>
     <div class="row pengumuman">
-      <?= ListView::widget(
-        [
-          'summary' => false,
-          'dataProvider' => $dataProvider,
-          //'filterModel' => $searchModel,
-          // 'itemOptions' => ['tag' => null],
-          'options'      => [
-            'tag' => false,
-          ],
-          'itemOptions'  => [
-            'tag' => false,
-          ],
-          'itemView' => function ($model, $key, $index, $widget) {
-            $itemContent = $this->render(
-              '_data',
-              [
-                'model' => $model,
-                'index' => $index,
-                'key' => $key
-              ]
-            );
-            return $itemContent;
-          }
-
-        ]
-      );
-      ?>
+      <?= ListView::widget([
+        'dataProvider' => $dataProvider,
+        'itemOptions'  => ['class' => 'item'],
+        'itemView'     => '_data',
+        'summary'      => '',
+      ]) ?>
     </div>
   </div>
 </section>

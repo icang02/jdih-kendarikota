@@ -46,6 +46,11 @@ return [
       'enablePrettyUrl' => true,
       'showScriptName' => false,
       'rules' => [
+        // Aturan khusus untuk pagination
+        'dokumen/<action:\w+>/page/<page:\d+>' => 'dokumen/<action>',
+        'pengumuman/<action:\w+>/page/<page:\d+>' => 'pengumuman/<action>',
+
+        // Aturan lainnya
         '<controller:informasi-hukum>/<action:index>/<id:\d+>' => '<controller>/<action>',
         '<controller:informasi-hukum>/<action:view>/<id:\d+>'  => '<controller>/<action>',
         '<controller:\w+>/<action:\w+>/<id:\d+>'               => '<controller>/<action>',

@@ -15,33 +15,38 @@ $baseUrl    = $asset->baseUrl;
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
-<head>
-    <meta charset="<?= Yii::$app->charset ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() ?>
-</head>
-<body class="hold-transition skin-red sidebar-mini">
-<?php $this->beginBody() ?>
 
-<div class="wrapper">
-    <?= $this->render('header.php', ['baserUrl' => $baseUrl, 'title'=>Yii::$app->name]) ?>
+<head>
+  <meta charset="<?= Yii::$app->charset ?>">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?= Html::csrfMetaTags() ?>
+  <title>Admin | JDIH Kota Kendari</title>
+  <?php $this->head() ?>
+</head>
+
+<body class="hold-transition skin-red sidebar-mini">
+  <?php $this->beginBody() ?>
+
+  <div class="wrapper">
+    <?= $this->render('header.php', ['baserUrl' => $baseUrl, 'title' => Yii::$app->name]) ?>
     <?= $this->render('leftside.php', ['baserUrl' => $baseUrl]) ?>
     <?= $this->render('content.php', ['content' => $content]) ?>
     <?= $this->render('footer.php', ['baserUrl' => $baseUrl]) ?>
     <?= $this->render('rightside.php', ['baserUrl' => $baseUrl]) ?>
-</div>
+  </div>
 
-<!--footer class="footer">
+  <!--footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?//= date('Y') ?></p>
+        <p class="pull-left">&copy; My Company <? //= date('Y')
+                                                ?></p>
 
-        <p class="pull-right"><?//= Yii::powered() ?></p>
+        <p class="pull-right"><? //= Yii::powered()
+                              ?></p>
     </div>
 </footer-->
 
-<?php $this->endBody() ?>
+  <?php $this->endBody() ?>
 </body>
+
 </html>
 <?php $this->endPage() ?>

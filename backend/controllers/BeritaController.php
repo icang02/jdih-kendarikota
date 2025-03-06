@@ -15,6 +15,20 @@ use yii\web\UploadedFile;
  */
 class BeritaController extends Controller
 {
+  public function dd($data)
+  {
+    echo "<pre>";
+    print_r($data);
+    exit;
+  }
+
+  public function gen_filename($data)
+  {
+    $randomPrefix = rand(0, 9) . chr(rand(65, 90)) . rand(0, 9) . chr(rand(97, 122));
+    $newFileName = $randomPrefix . '-' . strtolower(preg_replace('/[^a-zA-Z0-9-_\.]/', '', $data));
+    return $newFileName;
+  }
+
   /**
    * @inheritdoc
    */
@@ -86,12 +100,11 @@ class BeritaController extends Controller
 
     if ($model->load(Yii::$app->request->post())) {
       $image = UploadedFile::getInstance($model, 'image');
-      if (!empty($image)) {
-        $randomPrefix = rand(0, 9) . chr(rand(65, 90)) . rand(0, 9) . chr(rand(97, 122));
-        $newFileName = $randomPrefix . '-' . strtolower(preg_replace('/[^a-zA-Z0-9-_\.]/', '', $image->name));
-        $model->image = $newFileName;
 
-        $path = Yii::getAlias('@common') . '/dokumen/' . $model->image;
+      if (!empty($image)) {
+        $model->image = $this->gen_filename($image->name);
+
+        $path = Yii::getAlias("@common/dokumen/$model->image");
         $image->saveAs($path);
       }
 
@@ -119,35 +132,21 @@ class BeritaController extends Controller
   public function actionUpdate($id)
   {
     $model = $this->findModel($id);
-    $old_image = $model->image;
+    $oldImage = $model->image;
 
     if ($model->load(Yii::$app->request->post())) {
       $image = UploadedFile::getInstance($model, 'image');
       if (!empty($image)) {
-        // Simpan nama gambar lama sebelum diubah
-        $oldImage = $model->getOldAttribute('image');
+        $model->image = $this->gen_filename($image->name);
 
-        // Generate nama file baru dengan 4 karakter acak (angka-huruf-angka-huruf)
-        $randomPrefix = rand(0, 9) . chr(rand(65, 90)) . rand(0, 9) . chr(rand(97, 122));
-        $newFileName = $randomPrefix . '-' . strtolower(preg_replace('/[^a-zA-Z0-9-_\.]/', '', $image->name));
-        $model->image = $newFileName;
+        $path = Yii::getAlias("@common/dokumen/$model->image");
+        $image->saveAs($path);
 
-        // Path penyimpanan
-        $uploadPath = Yii::getAlias('@common/dokumen/');
-        $newFilePath = $uploadPath . $newFileName;
-
-        // Simpan gambar baru
-        if ($image->saveAs($newFilePath)) {
-          // Hapus gambar lama jika ada
-          if (!empty($oldImage)) {
-            $oldFilePath = $uploadPath . $oldImage;
-            if (file_exists($oldFilePath)) {
-              unlink($oldFilePath); // Hapus file lama
-            }
-          }
-        }
+        $deleteImage = Yii::getAlias("@common/dokumen/$oldImage");
+        if (is_file($deleteImage))
+          unlink($deleteImage);
       } else {
-        $model->image = $old_image;
+        $model->image = $oldImage;
       }
 
       if ($model->save()) {
@@ -175,15 +174,11 @@ class BeritaController extends Controller
     try {
       $model = $this->findModel($id);
 
-      // Simpan path gambar sebelum model dihapus
-      $imagePath = Yii::getAlias('@common/dokumen/') . $model->image;
-
       // Hapus model dari database
       if ($model->delete()) {
-        // Hapus gambar jika ada
-        if (!empty($model->image) && file_exists($imagePath)) {
-          unlink($imagePath); // Hapus file gambar
-        }
+        $deleteImage = Yii::getAlias("@common/dokumen/$model->image");
+        if (is_file($deleteImage))
+          unlink($deleteImage);
 
         Yii::$app->session->setFlash('danger', 'Data Berita berhasil dihapus');
       }
@@ -194,8 +189,6 @@ class BeritaController extends Controller
       return $this->redirect(['index']);
     }
   }
-
-
 
 
   /**

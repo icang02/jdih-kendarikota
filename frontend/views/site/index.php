@@ -25,7 +25,7 @@ $pejabat = [
 ?>
 
 <!-- start banner -->
-<section class="bg-img screen-height cover-background line-banner" data-overlay-dark="7" data-background="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/background.jpg">
+<section class="bg-img screen-height cover-background line-banner" data-overlay-dark="7" data-background="<?= Yii::$app->request->hostInfo ?>/frontend/assets/img/background.webp">
   <div class="container position-relative">
     <div class="header-text display-table z-index-1 width-100">
       <div class="display-table-cell">
@@ -204,7 +204,7 @@ $pejabat = [
         </div>
         <div class="d-flex card-peraturan mt-5 justify-content-center">
           <?php foreach ($peraturan as $data) : ?>
-            <div class="col-lg-5">
+            <div class="col-lg-5" onclick="window.location.href='/dokumen/view/'+ <?= $data->id ?>">
               <label><?= "$data->jenis_peraturan $data->tahun_terbit" ?></label>
               <h3><?= $data->pemrakarsa ?></h3>
               <p>
@@ -300,7 +300,9 @@ $pejabat = [
             </div>
           </div>
           <div class="col-lg-12">
-            <?= Html::a('<i class="fa-solid fa-book"></i> &nbsp;Lihat Detail &nbsp;<i class="fa-solid fa-arrow-right"></i>', ['dokumen/view?id=' . $monografi[0]->id], ['class' => 'btn btn-secondary']); ?>
+            <a href="<?= Yii::$app->request->hostInfo . "/dokumen/view/" . $monografi[0]->id ?>" class="btn btn-secondary">
+              <i class="fa-solid fa-book"></i> &nbsp;Lihat Detail &nbsp;<i class="fa-solid fa-arrow-right"></i>
+            </a>
           </div>
         </div>
       </div>

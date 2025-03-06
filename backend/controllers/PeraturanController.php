@@ -240,6 +240,7 @@ class PeraturanController extends Controller
       }
       $model->save();
 
+      // Upload lampiran
       $lampiran->id_dokumen = $model->id;
       $dokumen_lampiran = UploadedFile::getInstance($lampiran, 'dokumen_lampiran');
 
@@ -339,7 +340,6 @@ class PeraturanController extends Controller
   {
     try {
       $model = $this->findModel($id);
-      $hasilUjiMateri = HasilUjiMateri::find()->where(['id_dokumen' => $id])->all();
 
       if ($model->delete()) {
         // Delete abstrak
